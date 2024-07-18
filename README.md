@@ -1,3 +1,6 @@
 # CG_DCA0114
 
-Matéria
+## Compilação
+
+
+gcc main.c -o Projeto -lglut -lGLU -lGL
