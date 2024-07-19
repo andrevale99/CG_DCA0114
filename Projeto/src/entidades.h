@@ -1,6 +1,17 @@
 #ifndef ENTIDADES_H
 #define ENTIDADES_H
 
+struct Window
+{
+    int width;
+    int height;
+
+    int posx;
+    int posy;
+
+    char *name;
+};
+
 typedef struct 
 {
     float raio;
