@@ -30,15 +30,7 @@ GLfloat mat_shininess[] = {50.0};
 
 static struct Camera camera = {0};
 
-static struct Planeta sol = {0};
-static struct Planeta mercurio = {0};
-static struct Planeta venus = {0};
-static struct Planeta terra = {0};
-static struct Planeta marte = {0};
-static struct Planeta jupiter = {0};
-static struct Planeta saturno = {0};
-static struct Planeta urano = {0};
-static struct Planeta netuno = {0};
+static struct Planeta planetas[2]; 
 
 // @brief Variavel para calcular o tempo percorrido
 //
@@ -145,25 +137,17 @@ void display(void)
    glPushMatrix();
 
    glRotatef((GLfloat)year, 0.0, 1.0, 0.0);
-   glTranslatef(mercurio.x, mercurio.y, mercurio.z);
+   glTranslatef(planetas[1].x, planetas[1].y, planetas[1].z);
    // glRotatef((GLfloat)day, 0.0, 1.0, 0.0);
-   glutSolidSphere(mercurio.esfera.raio, mercurio.esfera.slices, mercurio.esfera.stacks); /* draw smaller planet */
-   
-   glPopMatrix();
-
-   glPushMatrix();
-
-   glRotatef((GLfloat)year, 0.0, 1.0, 0.0);
-   glTranslatef(venus.x, venus.y, venus.z);
-   glutSolidSphere(venus.esfera.raio, venus.esfera.slices, venus.esfera.stacks); /* draw smaller planet */
+   glutSolidSphere(planetas[1].esfera.raio, planetas[1].esfera.slices, planetas[1].esfera.stacks); /* draw smaller planet */
    
    glPopMatrix();
 
    // Sol criado na origem do mundo
    glPushMatrix();
    
-   glTranslatef(sol.x, sol.y, sol.z);
-   glutSolidSphere(sol.esfera.raio, sol.esfera.slices, sol.esfera.stacks); /* draw sun */
+   glTranslatef(planetas[0].x, planetas[0].y, planetas[0].z);
+   glutSolidSphere(planetas[0].esfera.raio, planetas[0].esfera.slices, planetas[0].esfera.stacks); /* draw sun */
    
    glPopMatrix();   
 
@@ -200,21 +184,17 @@ void keyboard(unsigned char key, int x, int y)
    {
    case 'd':
       day = (day + 10) % 360;
-      glutPostRedisplay();
       break;
    case 'D':
       day = (day - 10) % 360;
-      glutPostRedisplay();
       break;
 
    case '+':
       camera.eyez = camera.eyez + 0.5;
-      glutPostRedisplay();
       break;
 
    case '-':
       camera.eyez = camera.eyez - 0.5;
-      glutPostRedisplay();
       break;
 
    case ESC_KEY:
@@ -241,26 +221,20 @@ void idle(void)
 
 void set_planetas(void)
 {
-   sol.esfera.raio = 1.0;
-   sol.esfera.slices = 20;
-   sol.esfera.stacks = 16;
-   sol.x = 0.;
-   sol.y = 0.;
-   sol.z = 0.;
 
-   mercurio.esfera.raio = .2;
-   mercurio.esfera.slices = 10;
-   mercurio.esfera.stacks = 8;
-   mercurio.x = 3.0;
-   mercurio.y = 0.;
-   mercurio.z = 0.;
+   planetas[0].esfera.raio = 1.0;
+   planetas[0].esfera.slices = 20;
+   planetas[0].esfera.stacks = 16;
+   planetas[0].x = 0.;
+   planetas[0].y = 0.;
+   planetas[0].z = 0.;
 
-   venus.esfera.raio = 0.5;
-   venus.esfera.slices = 10;
-   venus.esfera.stacks = 8;
-   venus.x = 5.0;
-   venus.y = 0.;
-   venus.z = 0.;
+   planetas[1].esfera.raio = .2;
+   planetas[1].esfera.slices = 10;
+   planetas[1].esfera.stacks = 8;
+   planetas[1].x = 3.0;
+   planetas[1].y = 0.;
+   planetas[1].z = 0.;
 }
 
 void Arg_parse(const int argc, char *argv[])
