@@ -228,6 +228,8 @@ void set_planetas(void)
    planetas[0].x = 0.;
    planetas[0].y = 0.;
    planetas[0].z = 0.;
+   planetas[0].velocidade_x = 0.;
+   planetas[0].velocidade_y = 0.;
 
    planetas[1].esfera.raio = .2;
    planetas[1].esfera.slices = 10;
@@ -235,6 +237,8 @@ void set_planetas(void)
    planetas[1].x = 3.0;
    planetas[1].y = 0.;
    planetas[1].z = 0.;
+   planetas[1].velocidade_x = 0.;
+   planetas[1].velocidade_y = 2 * PI;
 }
 
 void Arg_parse(const int argc, char *argv[])
