@@ -1,5 +1,5 @@
 GCC = gcc
-FLAGS = -Wall -lglut -lGLU -lGL
+FLAGS = -Wall -lm -lglut -lGLU -lGL
 
 OUT = Planeta.out
 MAIN = main.c
