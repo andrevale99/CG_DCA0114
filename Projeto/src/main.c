@@ -13,8 +13,11 @@
 //=================================================
 // VARIAVEIS
 //=================================================
+
 static int year = 0, day = 0;
 
+// Variavel para manipular o basico
+// da janela principal
 static struct Window window = {
     .width = 640,
     .height = 480,
@@ -34,9 +37,12 @@ static struct Planeta planetas[2];
 
 // @brief Variavel para calcular o tempo percorrido
 //
-// @note O primeiro index eh o mais recente e o segundo
-// eh o antigo
+// @note A primeira posicao eh o mais recente e o segundo
+// eh o anterior
 static int deltaTime[] = {0, 0};
+
+// Estrutura para manipulacao de arquivos
+FILE arq;
 //=================================================
 // PROTOTIPOS
 //=================================================
