@@ -33,7 +33,7 @@ GLfloat mat_shininess[] = {50.0};
 
 static struct Camera camera = {0};
 
-static struct Planeta planetas[2]; 
+static struct Planeta planetas[2];
 
 // @brief Variavel para calcular o tempo percorrido
 //
@@ -42,7 +42,7 @@ static struct Planeta planetas[2];
 static int deltaTime[] = {0, 0};
 
 // Estrutura para manipulacao de arquivos
-FILE arq;
+FILE *arq;
 //=================================================
 // PROTOTIPOS
 //=================================================
@@ -142,20 +142,20 @@ void display(void)
 
    glPushMatrix();
 
-   glRotatef((GLfloat)year, 0.0, 1.0, 0.0);
+   //glRotatef((GLfloat)year, 0.0, 1.0, 0.0);
    glTranslatef(planetas[1].x, planetas[1].y, planetas[1].z);
    // glRotatef((GLfloat)day, 0.0, 1.0, 0.0);
    glutSolidSphere(planetas[1].esfera.raio, planetas[1].esfera.slices, planetas[1].esfera.stacks); /* draw smaller planet */
-   
+
    glPopMatrix();
 
    // Sol criado na origem do mundo
    glPushMatrix();
-   
+
    glTranslatef(planetas[0].x, planetas[0].y, planetas[0].z);
    glutSolidSphere(planetas[0].esfera.raio, planetas[0].esfera.slices, planetas[0].esfera.stacks); /* draw sun */
-   
-   glPopMatrix();   
+
+   glPopMatrix();
 
    glLoadIdentity();
    gluLookAt(camera.eyex, camera.eyey, camera.eyez,
@@ -216,9 +216,10 @@ void idle(void)
 {
    deltaTime[0] = glutGet(GLUT_ELAPSED_TIME);
 
-   if ((deltaTime[0] - deltaTime[1]) > 100)
+   if ((deltaTime[0] - deltaTime[1]) > 10)
    {
-      year = (year + 5) % 360;
+      //year = (year + 5) % 360;
+      calculo_orbita(&planetas[1], 0.002);
       glutPostRedisplay();
 
       deltaTime[1] = deltaTime[0];
@@ -228,7 +229,7 @@ void idle(void)
 void set_planetas(void)
 {
 
-   planetas[0].esfera.raio = 1.0;
+   planetas[0].esfera.raio = 0.5;
    planetas[0].esfera.slices = 20;
    planetas[0].esfera.stacks = 16;
    planetas[0].x = 0.;
@@ -240,11 +241,11 @@ void set_planetas(void)
    planetas[1].esfera.raio = .2;
    planetas[1].esfera.slices = 10;
    planetas[1].esfera.stacks = 8;
-   planetas[1].x = 3.0;
+   planetas[1].x = 5.2;
    planetas[1].y = 0.;
    planetas[1].z = 0.;
    planetas[1].velocidade_x = 0.;
-   planetas[1].velocidade_y = 2 * PI;
+   planetas[1].velocidade_y =  2 * PI / sqrt((powf(planetas[1].x, 2) + powf(planetas[1].y, 2)));
 }
 
 void Arg_parse(const int argc, char *argv[])
