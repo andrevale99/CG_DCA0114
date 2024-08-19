@@ -9,6 +9,7 @@
 #include "entidades.h"
 
 #define ESC_KEY 27
+#define MAX_PLANETAS 5
 
 //=================================================
 // VARIAVEIS
@@ -27,13 +28,13 @@ static struct Window window = {
     .name = "Planeta",
 };
 
-static GLfloat iluminacao[] = {0, 5.0, 0};
+static GLfloat iluminacao[] = {0, 0, -0.6};
 GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
 GLfloat mat_shininess[] = {50.0};
 
 static struct Camera camera = {0};
 
-static struct Planeta planetas[2];
+static struct Planeta planetas[5];
 
 // @brief Variavel para calcular o tempo percorrido
 //
@@ -238,10 +239,10 @@ void set_planetas(void)
    planetas[0].velocidade_x = 0.;
    planetas[0].velocidade_y = 0.;
 
-   planetas[1].esfera.raio = .2;
+   planetas[1].esfera.raio = .1;
    planetas[1].esfera.slices = 10;
    planetas[1].esfera.stacks = 8;
-   planetas[1].x = 5.2;
+   planetas[1].x = 1.0;
    planetas[1].y = 0.;
    planetas[1].z = 0.;
    planetas[1].velocidade_x = 0.;
@@ -256,6 +257,8 @@ void Arg_parse(const int argc, char *argv[])
              "--help \t Mensagem de ajuda do programa\n"
              "-w \t Largura da Janela [default=%d]\n"
              "-h \t Altura da Janela [default=%d]\n"
+             "-p \t Planeta com o argumento sua velocidade em AU/year\n"
+             "\t So pode ter no MAXIMO 5 planetas\n"
              "\n",
              window.width, window.height);
 
