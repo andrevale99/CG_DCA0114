@@ -21,12 +21,12 @@ struct Window
     char *name;
 };
 
-//  @brief Estrutura para o Frustum 
+//  @brief Estrutura para o Frustum
 //  (troco de visualizacao) da camera
 //
 //  @note Outra maneira de gerar a projecao da camera
 //  na tela
-typedef struct 
+typedef struct
 {
     GLdouble left;
     GLdouble right;
@@ -38,9 +38,8 @@ typedef struct
     GLdouble far;
 } Frustum;
 
-
 //  @brief Estrutura para a Pespectiva da camera
-typedef struct 
+typedef struct
 {
     int FOV; // [0., 180.] degrees
 
@@ -49,9 +48,9 @@ typedef struct
 
     int near;
     int far;
-}Perspective;
+} Perspective;
 
-//  @brief Estrutura para a Camera 
+//  @brief Estrutura para a Camera
 struct Camera
 {
     GLdouble eyex;
@@ -85,10 +84,11 @@ struct Mouse
 };
 
 //  @brief Estrutura para a Esfera
-struct Esfera 
+struct Esfera
 {
     GLdouble posx;
     GLdouble posy;
+    GLdouble posz;
 
     GLdouble raio;
 
@@ -97,4 +97,12 @@ struct Esfera
 
 } Esfera;
 
+struct Cubo
+{
+    GLdouble posx;
+    GLdouble posy;
+    GLdouble posz;
+
+    GLdouble aresta;
+};
 #endif
