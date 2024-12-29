@@ -21,16 +21,6 @@ struct Window
     char *name;
 };
 
-//  @brief Estrutura para a Esfera
-typedef struct 
-{
-    double raio;
-
-    GLint slices;
-    GLint stacks;
-
-} Esfera;
-
 //  @brief Estrutura para o Frustum 
 //  (troco de visualizacao) da camera
 //
@@ -76,6 +66,8 @@ struct Camera
     GLdouble upy;
     GLdouble upz;
 
+    GLdouble angle;
+
     Perspective Perspective;
 };
 
@@ -92,5 +84,17 @@ struct Mouse
     int state;
 };
 
+//  @brief Estrutura para a Esfera
+struct Esfera 
+{
+    GLdouble posx;
+    GLdouble posy;
+
+    GLdouble raio;
+
+    GLint slices;
+    GLint stacks;
+
+} Esfera;
 
 #endif

@@ -2,43 +2,43 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "entidades.h"
+
+#define FPS_FRAME 30
 
 struct Camera camera;
 struct Mouse mouse;
 
 void init(void)
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glShadeModel(GL_FLAT);
+    glClearColor(0.0, 0.0, 0.0, 1.0); // Define a cor de fundo como preto
+    glEnable(GL_DEPTH_TEST);          // Habilita teste de profundidade
 
-    for (uint8_t i = 0; i < 3; ++i)
-        *(&camera.centerx + i * sizeof(GLdouble)) = 0.;
+    camera.eyex = camera.eyey = 0.0;
+    camera.eyez = 5.0;
 
-    camera.eyez = 10;
+    camera.centerx = camera.centery = camera.centerz = 0.0;
 
-    camera.upx = camera.upz = 0.;
-    camera.upy = 1.;
-
-    for (uint8_t i = 0; i < 6; i++)
-        *(&mouse.x + i * sizeof(int)) = 0;
+    camera.upx = camera.upz = 0.0;
+    camera.upy = 1.0;
 }
 
 void display(void)
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
-    glLoadIdentity(); /* clear the matrix */
-                      /* viewing transformation  */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    gluLookAt(camera.eyex, camera.eyey, camera.eyez,
-              camera.centerx, camera.centery, camera.centerz,
-              camera.upx, camera.upy, camera.upz);
-
-    glScalef(1.0, 1.0, 1.0); /* modeling transformation */
+    glLoadIdentity();
+    // Aplica transformações da câmera
+    glTranslatef(0.0, 0.0, -camera.eyez);
+    glRotated(camera.angle, 0, 1, 0);
+              
+    // Desenha o cubo
     glutWireCube(1.0);
+
     glFlush();
 }
 
@@ -46,67 +46,58 @@ void reshape(int w, int h)
 {
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
     glMatrixMode(GL_PROJECTION);
-
     glLoadIdentity();
-
     gluPerspective(60.0, (GLfloat)w / (GLfloat)h, 1.0, 30.0);
     glMatrixMode(GL_MODELVIEW);
-
-    glLoadIdentity();
-
-    gluLookAt(camera.eyex, camera.eyey, camera.eyez,
-              camera.centerx, camera.centery, camera.centerz,
-              camera.upx, camera.upy, camera.upz);
 }
 
 void getMousePos(int x, int y)
 {
     mouse.x = x;
-    mouse.y = y;
-
-    printf("%d\t%d\n", mouse.x, mouse.y);
-    printf("*%d\t%d\n\n", mouse.old_x, mouse.old_y);
-
     if (mouse.x < mouse.old_x)
-        camera.eyez = camera.eyez - 0.5;
-
+        camera.eyez += 0.5;
     else
-        camera.eyez = camera.eyez + 0.5;
+        camera.eyez -= 0.5;
 
     mouse.old_x = mouse.x;
-    mouse.old_y = mouse.y;
-
-    glutPostRedisplay();
 }
 
-void getKeyboard(uint8_t key, int x, int y)
+void getKeyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
     case 'q':
         exit(0);
-        break;
-
     case 'r':
-    camera.eyez = 10;
-    camera.eyex = camera.eyey = 0;
-    glutPostRedisplay();
-    break;
-
+        camera.eyez = 5.0;
+        break;
+    case '+':
+        camera.eyez += 0.5;
+        break;
+    case '-':
+        camera.eyez -= 0.5;
+        break;
     default:
         break;
     }
 }
 
+void timer(int value)
+{
+    camera.angle += 1;
+    if (camera.angle >= 360)
+        camera.angle -= 360;
+
+    glutPostRedisplay();
+    glutTimerFunc(1000 / FPS_FRAME, timer, 0);
+}
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
-
     glutCreateWindow(argv[0]);
 
     init();
@@ -115,8 +106,9 @@ int main(int argc, char **argv)
     glutReshapeFunc(reshape);
     glutMotionFunc(getMousePos);
     glutKeyboardFunc(getKeyboard);
+    glutTimerFunc(1000 / FPS_FRAME, timer, 0);
 
     glutMainLoop();
 
-    return EXIT_SUCCESS;
+    return 0;
 }
