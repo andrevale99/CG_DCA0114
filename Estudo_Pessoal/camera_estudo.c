@@ -25,6 +25,7 @@ void init(void)
 
     camera.upx = camera.upz = 0.0;
     camera.upy = 1.0;
+    camera.angle = 0.;
 }
 
 void display(void)
@@ -33,13 +34,17 @@ void display(void)
 
     glLoadIdentity();
     // Aplica transformações da câmera
-    glTranslatef(0.0, 0.0, -camera.eyez);
+    gluLookAt(camera.eyex, camera.eyey, camera.eyez,          // Posição da câmera
+              camera.centerx, camera.centery, camera.centerz, // Centro da cena
+              camera.upx, camera.upy, camera.upz);            // Direção "up"
+
     glRotated(camera.angle, 0, 1, 0);
-              
+
     // Desenha o cubo
     glutWireCube(1.0);
 
     glFlush();
+
 }
 
 void reshape(int w, int h)
@@ -71,12 +76,6 @@ void getKeyboard(unsigned char key, int x, int y)
     case 'r':
         camera.eyez = 5.0;
         break;
-    case '+':
-        camera.eyez += 0.5;
-        break;
-    case '-':
-        camera.eyez -= 0.5;
-        break;
     default:
         break;
     }
@@ -85,8 +84,8 @@ void getKeyboard(unsigned char key, int x, int y)
 void timer(int value)
 {
     camera.angle += 1;
-    if (camera.angle >= 360)
-        camera.angle -= 360;
+    if (camera.angle >= 360.)
+        camera.angle -= 360.;
 
     glutPostRedisplay();
     glutTimerFunc(1000 / FPS_FRAME, timer, 0);
@@ -95,7 +94,7 @@ void timer(int value)
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_SINGLE| GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
