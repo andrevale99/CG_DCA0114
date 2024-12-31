@@ -2,6 +2,8 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include <stdbool.h>
+
 #include "entidades.h"
 
 #define FPS_FRAME 30
@@ -12,6 +14,10 @@
 struct Camera camera;
 struct Esfera obj;
 
+float speed = 0.5;
+
+// Array para rastrear o estado das teclas (pressionada ou não)
+bool keyStates[256]; // 256 para todas as teclas ASCII
 //=========================================================
 //  PROTOTIPOS
 //=========================================================
@@ -20,6 +26,7 @@ void display(void);
 void reshape(int w, int h);
 void getKeyboard(unsigned char key, int x, int y);
 void TimerFunc(int value);
+void keyReleased(unsigned char key, int x, int y);
 
 //=========================================================
 //  MAIN
@@ -37,6 +44,7 @@ int main(int argc, char **argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(getKeyboard);
+    glutKeyboardUpFunc(keyReleased); // Detecta tecla liberada
     glutTimerFunc(1000 / FPS_FRAME, TimerFunc, 0);
 
     glutMainLoop();
@@ -82,8 +90,8 @@ void display(void)
 
     {
         glPushMatrix();
-        glTranslated(obj.posx, obj.posy, obj.posz);
-        glutWireSphere(obj.raio, obj.slices, obj.stacks);
+        glTranslated(0, 0, 0);
+        glutWireTeapot(1.);
         glPopMatrix();
     }
 
@@ -101,44 +109,33 @@ void reshape(int w, int h)
 
 void getKeyboard(unsigned char key, int x, int y)
 {
-    switch (key)
-    {
-    case 'q':
-        exit(0);
-        break;
+    keyStates[key] = true; // Marca a tecla como pressionada
+}
 
-    case 'W':
-        camera.angle_beta += 0.2;
-        break;
-
-    case 'w':
-        camera.angle_beta -= 0.2;
-        break;
-
-    case 'A':
-        camera.angle_alpha += 0.2;
-
-        break;
-
-    case 'a':
-        camera.angle_alpha -= 0.2;
-        break;
-
-    case GLUT_KEY_RIGHT:
-        camera.angle_gamma += 0.2;
-        break;
-
-    case GLUT_KEY_LEFT:
-        camera.angle_gamma -= 0.2;
-        break;
-
-    default:
-        break;
-    }
+void keyReleased(unsigned char key, int x, int y)
+{
+    keyStates[key] = false; // Marca a tecla como liberada
 }
 
 void TimerFunc(int value)
 {
-    glutPostRedisplay();
+    if (keyStates['w'])
+        camera.angle_alpha += speed;
+    if (keyStates['s'])
+        camera.angle_alpha -= speed;
+    if (keyStates['a'])
+        camera.angle_beta += speed;
+    if (keyStates['d'])
+        camera.angle_beta -= speed;
+
+    // Detecta duas teclas simultaneamente (Exemplo: W e D)
+    if (keyStates['w'] && keyStates['s'])
+        camera.angle_gamma += 0.2;
+
+    // Detecta duas teclas simultaneamente (Exemplo: W e D)
+    if (keyStates['a'] && keyStates['d'])
+        camera.angle_gamma -= 0.2;
+
+    glutPostRedisplay(); // Redesenha a tela
     glutTimerFunc(1000 / FPS_FRAME, TimerFunc, 0);
 }
