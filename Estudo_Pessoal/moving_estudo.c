@@ -2,9 +2,6 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include <stdio.h>
-#include <math.h>
-
 #include "entidades.h"
 
 #define FPS_FRAME 30
@@ -13,26 +10,16 @@
 //  VARIAVEIS
 //=========================================================
 struct Camera camera;
-struct Mouse mouse;
+struct Esfera obj;
 
-struct Esfera esfera = {
-    .posx = 0.,
-    .posy = 0.,
-    .posz = 0.,
-
-    .raio = 0.5,
-    .slices = 10,
-    .stacks = 10,
-};
 //=========================================================
 //  PROTOTIPOS
 //=========================================================
 void init(void);
 void display(void);
 void reshape(int w, int h);
-void getMousePos(int x, int y);
 void getKeyboard(unsigned char key, int x, int y);
-void timer(int value);
+void TimerFunc(int value);
 
 //=========================================================
 //  MAIN
@@ -49,9 +36,8 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    glutMotionFunc(getMousePos);
     glutKeyboardFunc(getKeyboard);
-    glutTimerFunc(1000 / FPS_FRAME, timer, 0);
+    glutTimerFunc(1000 / FPS_FRAME, TimerFunc, 0);
 
     glutMainLoop();
 
@@ -72,7 +58,12 @@ void init(void)
 
     camera.upx = camera.upz = 0.0;
     camera.upy = 1.0;
-    camera.angle = 0.;
+    camera.angle_alpha = camera.angle_beta = camera.angle_gamma = 0.;
+
+    obj.posx = obj.posy = obj.posz = 0.;
+    obj.raio = 1.0;
+    obj.slices = 10;
+    obj.stacks = 20;
 }
 
 void display(void)
@@ -80,35 +71,19 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    // Aplica transformações da câmera
+
     gluLookAt(camera.eyex, camera.eyey, camera.eyez,          // Posição da câmera
               camera.centerx, camera.centery, camera.centerz, // Centro da cena
               camera.upx, camera.upy, camera.upz);            // Direção "up"
 
-    glRotated(camera.angle, 0, 1, 0);
+    glRotated(camera.angle_alpha, 1, 0, 0);
+    glRotated(camera.angle_beta, 0, 1, 0);
+    glRotated(camera.angle_gamma, 0, 0, 1);
 
     {
         glPushMatrix();
-        glutWireCube(30.);
-        glPopMatrix();
-    }
-
-    {
-        glPushMatrix();
-        // Desenha o cubo
-        glutWireCube(1.0);
-
-        glTranslated(3., 0., 0.);
-        glutWireCube(0.25);
-
-        glPopMatrix();
-    }
-    {
-        glPushMatrix();
-
-        glTranslated(esfera.posx, esfera.posy, esfera.posz);
-        glutWireSphere(esfera.raio, esfera.slices, esfera.stacks);
-
+        glTranslated(obj.posx, obj.posy, obj.posz);
+        glutWireSphere(obj.raio, obj.slices, obj.stacks);
         glPopMatrix();
     }
 
@@ -122,18 +97,6 @@ void reshape(int w, int h)
     glLoadIdentity();
     gluPerspective(60.0, (GLfloat)w / (GLfloat)h, 0.01, 50.);
     glMatrixMode(GL_MODELVIEW);
-    glTranslated(0., 0., 0.); // Coloca a camera o 0 global
-}
-
-void getMousePos(int x, int y)
-{
-    mouse.x = x;
-    if (mouse.x < mouse.old_x)
-        camera.eyez += 0.5;
-    else
-        camera.eyez -= 0.5;
-
-    mouse.old_x = mouse.x;
 }
 
 void getKeyboard(unsigned char key, int x, int y)
@@ -142,25 +105,40 @@ void getKeyboard(unsigned char key, int x, int y)
     {
     case 'q':
         exit(0);
-    case 'r':
-        camera.eyez = 0.5;
         break;
+
+    case 'W':
+        camera.angle_beta += 0.2;
+        break;
+
+    case 'w':
+        camera.angle_beta -= 0.2;
+        break;
+
+    case 'A':
+        camera.angle_alpha += 0.2;
+
+        break;
+
+    case 'a':
+        camera.angle_alpha -= 0.2;
+        break;
+
+    case GLUT_KEY_RIGHT:
+        camera.angle_gamma += 0.2;
+        break;
+
+    case GLUT_KEY_LEFT:
+        camera.angle_gamma -= 0.2;
+        break;
+
     default:
         break;
     }
 }
 
-void timer(int value)
+void TimerFunc(int value)
 {
-    camera.angle += 1;
-    if (camera.angle >= 360.)
-        camera.angle -= 360.;
-
-    if( camera.eyez >= 14.5)
-        camera.eyez = 14.5;
-    else if (camera.eyez <= -14.5)
-        camera.eyez = -14.5;
-
     glutPostRedisplay();
-    glutTimerFunc(1000 / FPS_FRAME, timer, 0);
+    glutTimerFunc(1000 / FPS_FRAME, TimerFunc, 0);
 }
