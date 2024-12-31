@@ -65,7 +65,9 @@ struct Camera
     GLdouble upy;
     GLdouble upz;
 
-    GLdouble angle;
+    GLdouble angle_alpha; //angulo X
+    GLdouble angle_beta; // angulo Y
+    GLdouble angle_gamma; // angulo Z
 
     Perspective Perspective;
 };
