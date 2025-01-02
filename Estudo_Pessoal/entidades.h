@@ -7,7 +7,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#define PI 3.14159265359
+#define PI (float)3.14159265359
 
 //  @brief Estrutura basica para a janela principal
 struct Window
@@ -28,14 +28,14 @@ struct Window
 //  na tela
 typedef struct
 {
-    GLdouble left;
-    GLdouble right;
+    GLfloat left;
+    GLfloat right;
 
-    GLdouble bottom;
-    GLdouble top;
+    GLfloat bottom;
+    GLfloat top;
 
-    GLdouble near;
-    GLdouble far;
+    GLfloat near;
+    GLfloat far;
 } Frustum;
 
 //  @brief Estrutura para a Pespectiva da camera
@@ -53,21 +53,21 @@ typedef struct
 //  @brief Estrutura para a Camera
 struct Camera
 {
-    GLdouble eyex;
-    GLdouble eyey;
-    GLdouble eyez;
+    GLfloat eyex;
+    GLfloat eyey;
+    GLfloat eyez;
 
-    GLdouble centerx;
-    GLdouble centery;
-    GLdouble centerz;
+    GLfloat centerx;
+    GLfloat centery;
+    GLfloat centerz;
 
-    GLdouble upx;
-    GLdouble upy;
-    GLdouble upz;
+    GLfloat upx;
+    GLfloat upy;
+    GLfloat upz;
 
-    GLdouble angle_alpha; //angulo X
-    GLdouble angle_beta; // angulo Y
-    GLdouble angle_gamma; // angulo Z
+    GLfloat angle_alpha; // angulo X
+    GLfloat angle_beta;  // angulo Y
+    GLfloat angle_gamma; // angulo Z
 
     Perspective Perspective;
 };
@@ -88,11 +88,9 @@ struct Mouse
 //  @brief Estrutura para a Esfera
 struct Esfera
 {
-    GLdouble posx;
-    GLdouble posy;
-    GLdouble posz;
+    GLfloat pos[3];
 
-    GLdouble raio;
+    GLfloat raio;
 
     GLint slices;
     GLint stacks;
@@ -101,10 +99,8 @@ struct Esfera
 
 struct Cubo
 {
-    GLdouble posx;
-    GLdouble posy;
-    GLdouble posz;
+    GLfloat pos[3];
 
-    GLdouble aresta;
+    GLfloat aresta;
 };
 #endif
