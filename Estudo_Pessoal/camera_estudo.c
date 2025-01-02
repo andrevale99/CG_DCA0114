@@ -16,14 +16,20 @@ struct Camera camera;
 struct Mouse mouse;
 
 struct Esfera esfera = {
-    .posx = 0.,
-    .posy = 0.,
-    .posz = 0.,
+    .pos[0] = 0.,
+    .pos[1] = 0.,
+    .pos[2] = 0.,
 
     .raio = 0.5,
     .slices = 10,
     .stacks = 10,
 };
+
+float points[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+float colors[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+
+float speed = 1.;
+float angle = 0;
 //=========================================================
 //  PROTOTIPOS
 //=========================================================
@@ -65,14 +71,15 @@ void init(void)
     glClearColor(0.0, 0.0, 0.0, 1.0); // Define a cor de fundo como preto
     glEnable(GL_DEPTH_TEST);          // Habilita teste de profundidade
 
-    camera.eyex = camera.eyey = 0.0;
-    camera.eyez = 5.;
+    camera.eyex = 0.0;
+    camera.eyey = 0.0;
+    camera.eyez = 2.5;
 
     camera.centerx = camera.centery = camera.centerz = 0.0;
 
     camera.upx = camera.upz = 0.0;
     camera.upy = 1.0;
-    camera.angle = 0.;
+    camera.angle_alpha = camera.angle_beta = camera.angle_gamma = 0.;
 }
 
 void display(void)
@@ -85,29 +92,21 @@ void display(void)
               camera.centerx, camera.centery, camera.centerz, // Centro da cena
               camera.upx, camera.upy, camera.upz);            // Direção "up"
 
-    glRotated(camera.angle, 0, 1, 0);
+    glRotatef(camera.angle_beta, 0,1,1);
 
     {
         glPushMatrix();
-        glutWireCube(30.);
-        glPopMatrix();
-    }
 
-    {
-        glPushMatrix();
-        // Desenha o cubo
-        glutWireCube(1.0);
-
-        glTranslated(3., 0., 0.);
-        glutWireCube(0.25);
-
-        glPopMatrix();
-    }
-    {
-        glPushMatrix();
-
-        glTranslated(esfera.posx, esfera.posy, esfera.posz);
-        glutWireSphere(esfera.raio, esfera.slices, esfera.stacks);
+        glTranslatef(0, 0, 0);
+        glLineWidth(2.);
+        glBegin(GL_LINES);
+        for (uint8_t i = 0; i < 9; i += 3)
+        {
+            glColor3f(colors[i], colors[i + 1], colors[i + 2]);
+            glVertex3f(0,0,0);
+            glVertex3f(points[i], points[i + 1], points[i + 2]);
+        }
+        glEnd();
 
         glPopMatrix();
     }
@@ -140,11 +139,8 @@ void getKeyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
-    case 'q':
+    case 27:
         exit(0);
-    case 'r':
-        camera.eyez = 0.5;
-        break;
     default:
         break;
     }
@@ -152,15 +148,7 @@ void getKeyboard(unsigned char key, int x, int y)
 
 void timer(int value)
 {
-    camera.angle += 1;
-    if (camera.angle >= 360.)
-        camera.angle -= 360.;
-
-    if( camera.eyez >= 14.5)
-        camera.eyez = 14.5;
-    else if (camera.eyez <= -14.5)
-        camera.eyez = -14.5;
-
+    camera.angle_beta += cos(2)*speed;
     glutPostRedisplay();
     glutTimerFunc(1000 / FPS_FRAME, timer, 0);
 }
