@@ -9,7 +9,7 @@
 #define FPS_FRAME 30
 
 // nao coloque mais de 80
-#define N_POINTS 4
+#define N_POINTS 10
 
 //=========================================================
 //  VARIAVEIS
@@ -17,7 +17,7 @@
 
 struct Camera camera;
 
-float points[N_POINTS*3] = {0};
+float points[N_POINTS * 3] = {0};
 
 GLuint vbo;
 //=========================================================
@@ -80,18 +80,7 @@ void init(void)
         points[i + 2] = 0;
 
         degree += 360. / (N_POINTS);
-
     }
-
-    // Gera e vincula um VBO
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    // Copia os dados dos pontos para o VBO
-    glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
-
-    // Desvincula o VBO (opcional)
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void display(void)
@@ -105,22 +94,20 @@ void display(void)
               camera.upx, camera.upy, camera.upz);            // Direção "up"
 
     glRotatef(camera.angle_beta, 0, 0, 1);
-    // Habilita o uso do VBO
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    // Configura o ponteiro de vértices
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, 0); // Cada vértice tem 3 floats (x, y, z)
-
-    // Desenha os pontos
-    glPointSize(5.0f);              // Tamanho dos pontos
-    glDrawArrays(GL_LINE_LOOP, 0, N_POINTS); // Desenha 30 pontos a partir do índice 0
-
-    // Desabilita o ponteiro de vértices
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    // Desvincula o VBO (opcional)
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glPushMatrix();
+    {
+        glLineWidth(5.);
+        glColor3f(1, 0.5, 0);
+        glTranslatef(0, 0, 0);
+        glBegin(GL_LINE_LOOP);
+        for (uint8_t i = 0; i < N_POINTS * 3; i += 3)
+        {
+            glVertex3f(points[i], points[i + 1], points[i + 2]);
+        }
+        glEnd();
+        glPopMatrix();
+    }
 
     glutSwapBuffers(); // Troca os buffers para exibir a cena
 
