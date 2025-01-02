@@ -18,8 +18,6 @@
 struct Camera camera;
 
 float points[N_POINTS * 3] = {0};
-
-GLuint vbo;
 //=========================================================
 //  PROTOTIPOS
 //=========================================================
@@ -100,7 +98,7 @@ void display(void)
         glLineWidth(5.);
         glColor3f(1, 0.5, 0);
         glTranslatef(0, 0, 0);
-        glBegin(GL_LINE_LOOP);
+        glBegin(GL_POINTS);
         for (uint8_t i = 0; i < N_POINTS * 3; i += 3)
         {
             glVertex3f(points[i], points[i + 1], points[i + 2]);
@@ -138,7 +136,7 @@ void getKeyboard(unsigned char key, int x, int y)
 
 void TimerFunc(int value)
 {
-    // camera.angle_beta += sin(2) * 1.5;
+    camera.angle_beta += sin(80) * 1.5;
     glutPostRedisplay();
     glutTimerFunc(1000 / FPS_FRAME, TimerFunc, 0);
 }
