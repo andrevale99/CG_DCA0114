@@ -68,7 +68,7 @@ void init(void)
     camera.upy = 1.0;
     camera.angle_alpha = camera.angle_beta = camera.angle_gamma = 0.;
 
-    obj.posx = obj.posy = obj.posz = 0.;
+    obj.pos[0] = obj.pos[1] = obj.pos[2] = 0.;
     obj.raio = 1.0;
     obj.slices = 10;
     obj.stacks = 20;
